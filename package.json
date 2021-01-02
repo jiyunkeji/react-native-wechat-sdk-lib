@@ -36,14 +36,14 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/jiyunkeji/react-native-wechat-sdk",
+  "repository": "https://github.com/jiyunkeji/react-native-wechat-sdk-lib",
   "author": "jiyunkeji <jykjgit@sina.com> (https://github.com/jiyunkeji)",
   "license": "MIT",
   "licenseFilename": "LICENSE",
   "bugs": {
-    "url": "https://github.com/jiyunkeji/react-native-wechat-sdk/issues"
+    "url": "https://github.com/jiyunkeji/react-native-wechat-sdk-lib/issues"
   },
-  "homepage": "https://github.com/jiyunkeji/react-native-wechat-sdk#readme",
+  "homepage": "https://github.com/jiyunkeji/react-native-wechat-sdk-lib#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
