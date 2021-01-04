@@ -18,7 +18,8 @@ export default class App extends React.Component {
       console.log(isInit ? '初始化成功' : '初始化失败');
 
       let registerApp: boolean = await WeChatSdkManager.instance().registerApp(
-        App.wechatAppId
+        App.wechatAppId,
+        'https://renmei.jiyunkeji.com.cn/app/'
       );
       console.log(registerApp ? 'registerApp成功' : 'registerApp失败');
 
