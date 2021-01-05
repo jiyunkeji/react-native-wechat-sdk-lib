@@ -21,6 +21,17 @@ export interface PayResponse {
   transaction?: string;
   returnKey?: string;
 }
+export class PayReq {
+  appId?: string;
+  partnerId?: string;
+  prepayId?: string;
+  nonceStr?: string;
+  timeStamp?: string;
+  package?: string;
+  sign?: string;
+  extData?: string;
+}
+
 export interface LaunchWXMiniProgramResponse {
   errCode?: number;
   errStr?: string;

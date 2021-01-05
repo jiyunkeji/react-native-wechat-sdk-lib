@@ -121,7 +121,7 @@ public class WeChatSdkModule extends ReactContextBaseJavaModule implements IWXAP
     constants.put(Key_Pref, Value_Pref);
     return constants;
   }
-  
+
   public boolean canOverrideExistingModule() {
     return true;
   }
@@ -657,7 +657,7 @@ public class WeChatSdkModule extends ReactContextBaseJavaModule implements IWXAP
       payReq.appId = appId;
 
       if (api.sendReq(payReq)) {
-        promise.resolve(null);
+        promise.resolve(true);
       } else {
         promise.reject(new Exception((INVOKE_FAILED)));
       }

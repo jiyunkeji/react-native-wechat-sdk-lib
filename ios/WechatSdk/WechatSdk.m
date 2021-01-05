@@ -775,8 +775,6 @@ RCT_EXPORT_METHOD(pay:(NSDictionary *)data
         return;
     };
     [WXApi sendReq:req completion:completion];
-    // BOOL success = [WXApi sendReq:req];
-    // callback(@[success ? [NSNull null] : INVOKE_FAILED]);
         } @catch (NSException *exception) {
                     reject([exception name],[exception reason],NULL);
               }
