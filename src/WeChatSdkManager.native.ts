@@ -19,7 +19,6 @@ export default class WeChatSdkManager {
     return weChatSdkManager;
   }
   init(appid: string): Promise<boolean> {
-    console.log(WeChatSdkModule);
     return WeChatSdkModule.init(appid);
   }
 
@@ -57,10 +56,8 @@ export default class WeChatSdkManager {
     event: EventType,
     listener: WeChatSdkEvents[EventType]
   ) {
-    console.log('begin add Listener' + event);
     if (!this._listeners.has(event)) {
       this._listeners.set(event, listener);
-      console.log('end add Listener');
       WeChatSdkModuleEvent.addListener(event, listener);
     }
   }

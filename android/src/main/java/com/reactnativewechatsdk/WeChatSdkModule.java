@@ -1,5 +1,6 @@
 package com.reactnativewechatsdk;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -31,6 +32,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.google.gson.Gson;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
@@ -655,14 +657,17 @@ public class WeChatSdkModule extends ReactContextBaseJavaModule implements IWXAP
         payReq.extData = data.getString("extData");
       }
       payReq.appId = appId;
-
+      Log.i("wechatsdk", new Gson().toJson(payReq));
       if (api.sendReq(payReq)) {
+        Log.i("wechatsdk sendReq", "true");
         promise.resolve(true);
       } else {
+        Log.i("wechatsdk sendReq", "false");
         promise.reject(new Exception((INVOKE_FAILED)));
       }
 
     } catch (Exception ex) {
+      Log.i("wechatsdk", new Gson().toJson(ex));
       promise.reject(ex);
     }
   }
@@ -931,7 +936,7 @@ public class WeChatSdkModule extends ReactContextBaseJavaModule implements IWXAP
 
   private void emit(String name, WritableMap params) {
     this.getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-      .emit(Value_Pref + name,params);
+      .emit(name,params);
   }
   // TODO: 实现sendRequest、sendSuccessResponse、sendErrorCommonResponse、sendErrorUserCancelResponse
 
@@ -953,13 +958,14 @@ public class WeChatSdkModule extends ReactContextBaseJavaModule implements IWXAP
 
   @Override
   public void onResp(BaseResp baseResp) {
+
     WritableMap map = Arguments.createMap();
     map.putInt("errCode", baseResp.errCode);
     map.putString("errStr", baseResp.errStr);
     map.putString("openId", baseResp.openId);
     map.putString("transaction", baseResp.transaction);
 
-    if (baseResp instanceof SendAuth.Resp) {
+    if (baseResp.getType()==ConstantsAPI.COMMAND_SENDAUTH) {
       SendAuth.Resp resp = (SendAuth.Resp) (baseResp);
       map.putString("code", resp.code);
       map.putString("state", resp.state);
@@ -969,11 +975,12 @@ public class WeChatSdkModule extends ReactContextBaseJavaModule implements IWXAP
       emit("onSendAuthResponse",map);
     }
 
-    if (baseResp instanceof SendMessageToWX.Resp) {
+    if (baseResp.getType()==ConstantsAPI.COMMAND_SENDMESSAGE_TO_WX) {
       SendMessageToWX.Resp resp = (SendMessageToWX.Resp) (baseResp);
       emit("onSendMessageToWXResponse",map);
     }
-    if (baseResp instanceof PayResp) {
+
+    if (baseResp.getType()==ConstantsAPI.COMMAND_PAY_BY_WX) {
       PayResp resp = (PayResp) (baseResp);
       map.putString("returnKey", resp.returnKey);
       emit("onPayResponse",map);
@@ -986,6 +993,8 @@ public class WeChatSdkModule extends ReactContextBaseJavaModule implements IWXAP
       map.putString("extMsg", extraData);
       emit("onWXLaunchMiniProgramResponse",map);
     }
+
+
 
   }
 

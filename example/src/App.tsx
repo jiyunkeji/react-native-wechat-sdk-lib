@@ -11,6 +11,7 @@ export default class App extends React.Component {
   public static wechatAppSecret: string = 'xx';
 
   async componentDidMount() {
+    console.log('WeChatSdkManager init');
     try {
       let isInit: boolean = await WeChatSdkManager.instance().init(
         App.wechatAppId
@@ -44,6 +45,7 @@ export default class App extends React.Component {
   }
   componentWillUnmount() {
     WeChatSdkManager.instance().destroy();
+    console.log('WeChatSdkManager destroy');
   }
   render() {
     return (

@@ -1,6 +1,6 @@
 {
   "name": "react-native-wechat-sdk-lib",
-  "version": "1.0.9",
+  "version": "1.0.17",
   "description": "lib for wechat sdk",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
