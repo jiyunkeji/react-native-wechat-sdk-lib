@@ -55,4 +55,20 @@ export enum ErrCode {
   ERR_UNSUPPORT = -5,
   ERR_BAN = -6,
 }
+export enum ShareScene {
+  WXSceneSession = 0,
+  WXSceneTimeline = 1,
+  WXSceneFavorite = 2,
+}
+export class ShareWebpageMetadata {
+  title?: string;
+  description?: string;
+  thumbImageUrl?: string;
+  webpageUrl?: string;
+  scene?: ShareScene;
+}
+export class ShareWebpageRsp {
+  errCode?: number;
+  errStr?: string;
+}
 export type Listener = (...args: any[]) => any;

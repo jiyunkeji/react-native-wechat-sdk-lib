@@ -399,6 +399,74 @@ RCT_EXPORT_METHOD(shareText:(NSDictionary *)data
          }
 }
 
+// 选择发票
+RCT_EXPORT_METHOD(chooseInvoice:(NSDictionary *)data
+                   :(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+       @try {
+           
+    WXChooseInvoiceReq *req = [[WXChooseInvoiceReq alloc] init];
+    req.appID = self.appId;
+    req.timeStamp = [data[@"timeStamp"] intValue];
+    req.nonceStr = data[@"nonceStr"];
+    req.cardSign = data[@"cardSign"];
+    req.signType = data[@"signType"];
+    
+   void ( ^ completion )( BOOL );
+    completion = ^( BOOL success )
+    {
+         if(success){
+                 resolve([NSNumber numberWithBool:YES]);
+                }else{
+                    reject(CODE_FAILED,INVOKE_FAILED,NULL);;
+                }
+        return;
+    };
+    [WXApi sendReq:req completion:completion];
+
+          } @catch (NSException *exception) {
+               reject([exception name],[exception reason],NULL);
+         }
+}
+
+// 分享文件
+RCT_EXPORT_METHOD(shareFile:(NSDictionary *)data
+                   :(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{   @try {
+           
+    NSString *url = data[@"url"];
+    WXFileObject *file =  [[WXFileObject alloc] init];
+    file.fileExtension = data[@"ext"];
+    NSData *fileData = [NSData dataWithContentsOfURL:[NSURL URLWithString: url]];
+    file.fileData = fileData;
+    
+    WXMediaMessage *message = [WXMediaMessage message];
+    message.title = data[@"title"];
+    message.mediaObject = file;
+    
+    SendMessageToWXReq *req = [[SendMessageToWXReq alloc] init];
+    req.bText = NO;
+    req.message = message;
+    req.scene = [data[@"scene"] integerValue];
+    void ( ^ completion )( BOOL );
+    completion = ^( BOOL success )
+    {
+         if(success){
+                 resolve([NSNumber numberWithBool:YES]);
+                }else{
+                    reject(CODE_FAILED,INVOKE_FAILED,NULL);;
+                }
+        return;
+    };
+    [WXApi sendReq:req completion:completion];
+
+          } @catch (NSException *exception) {
+               reject([exception name],[exception reason],NULL);
+         }
+}
+
 // 分享图片
 RCT_EXPORT_METHOD(shareImage:(NSDictionary *)data
                   :(RCTPromiseResolveBlock)resolve

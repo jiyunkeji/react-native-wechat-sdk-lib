@@ -277,6 +277,59 @@ public class WeChatSdkModule extends ReactContextBaseJavaModule implements IWXAP
     }
   }
 
+      /**
+     * 分享文本
+     *
+     * @param data
+     * @param callback
+     */
+    @ReactMethod
+    public void shareFile(ReadableMap data, Promise promise){
+
+       try {
+        WXFileObject fileObj = new WXFileObject();
+        fileObj.fileData = loadRawDataFromURL(data.getString("url"));
+
+        WXMediaMessage msg = new WXMediaMessage();
+        msg.mediaObject = fileObj;
+        msg.title = data.getString("title");
+
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.transaction = String.valueOf(System.currentTimeMillis());
+        req.message = msg;
+        req.scene = data.hasKey("scene") ? data.getInt("scene") : SendMessageToWX.Req.WXSceneSession;
+           promise.resolve(api.sendReq(req));
+
+            } catch (Exception exception) {
+      promise.reject(exception);
+    }
+    }
+
+  /**
+     * 选择发票
+     *
+     * @param data
+     * @param callback
+     */
+    @ReactMethod
+    public void chooseInvoice(ReadableMap data,  Promise promise) {
+
+       try {
+        ChooseCardFromWXCardPackage.Req req = new ChooseCardFromWXCardPackage.Req();
+
+        req.appId = this.appId;
+        req.cardType = "INVOICE";
+        req.timeStamp = String.valueOf(data.getInt("timeStamp"));
+        req.nonceStr = data.getString("nonceStr");
+        req.cardSign = data.getString("cardSign");
+        req.signType = data.getString("signType");
+
+        promise.resolve(api.sendReq(req));
+
+        } catch (Exception exception) {
+      promise.reject(exception);
+    }
+    }
   /**
    * 分享图片
    *
@@ -470,6 +523,11 @@ public class WeChatSdkModule extends ReactContextBaseJavaModule implements IWXAP
    */
   @ReactMethod
   public void shareWebpage(final ReadableMap data, final Promise promise) {
+   try {
+      if (api == null) {
+        promise.reject(new Exception(NOT_REGISTERED));
+        return;
+      }
     // 初始化一个WXWebpageObject，填写url
     WXWebpageObject webpage = new WXWebpageObject();
     webpage.webpageUrl = data.hasKey("webpageUrl") ? data.getString("webpageUrl") : null;
@@ -502,6 +560,9 @@ public class WeChatSdkModule extends ReactContextBaseJavaModule implements IWXAP
       req.message = msg;
       req.scene = data.hasKey("scene") ? data.getInt("scene") : SendMessageToWX.Req.WXSceneSession;
       promise.resolve(api.sendReq(req));
+    }
+        } catch (Exception exception) {
+      promise.reject(exception);
     }
   }
 

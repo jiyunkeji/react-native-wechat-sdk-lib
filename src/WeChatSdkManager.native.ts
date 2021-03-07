@@ -1,5 +1,10 @@
 import { NativeEventEmitter, NativeModules } from 'react-native';
-import type { AuthResponse, Listener, PayReq } from './Types';
+import type {
+  AuthResponse,
+  Listener,
+  PayReq,
+  ShareWebpageMetadata,
+} from './Types';
 import type { WeChatSdkEvents } from './WeChatSdkEvents';
 
 const { WeChatSdkModule } = NativeModules;
@@ -46,6 +51,9 @@ export default class WeChatSdkManager {
   }
   pay(payReq: PayReq): Promise<boolean> {
     return WeChatSdkModule.pay(payReq);
+  }
+  ShareWebpage(shareWebpage: ShareWebpageMetadata): Promise<boolean> {
+    return WeChatSdkModule.shareWebpage(shareWebpage);
   }
 
   destroy() {
