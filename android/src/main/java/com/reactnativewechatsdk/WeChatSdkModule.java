@@ -35,6 +35,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.gson.Gson;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
+import com.tencent.mm.opensdk.modelbiz.ChooseCardFromWXCardPackage;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.ShowMessageFromWX;
@@ -55,6 +56,7 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbiz.SubscribeMessage;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -62,7 +64,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -276,12 +281,43 @@ public class WeChatSdkModule extends ReactContextBaseJavaModule implements IWXAP
       promise.reject(exception);
     }
   }
+  public byte[] loadRawDataFromURL(String u) throws Exception {
+    URL url = new URL(u);
+    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+    InputStream is = conn.getInputStream();
+    BufferedInputStream bis = new BufferedInputStream(is);
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+    final int BUFFER_SIZE = 2048;
+    final int EOF = -1;
+
+    int c;
+    byte[] buf = new byte[BUFFER_SIZE];
+
+    while (true) {
+      c = bis.read(buf);
+      if (c == EOF)
+        break;
+
+      baos.write(buf, 0, c);
+    }
+
+    conn.disconnect();
+    is.close();
+
+    byte[] data = baos.toByteArray();
+    baos.flush();
+
+    return data;
+  }
 
       /**
      * 分享文本
      *
      * @param data
-     * @param callback
+     * @param
      */
     @ReactMethod
     public void shareFile(ReadableMap data, Promise promise){
@@ -309,7 +345,6 @@ public class WeChatSdkModule extends ReactContextBaseJavaModule implements IWXAP
      * 选择发票
      *
      * @param data
-     * @param callback
      */
     @ReactMethod
     public void chooseInvoice(ReadableMap data,  Promise promise) {
